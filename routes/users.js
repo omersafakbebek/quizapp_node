@@ -4,7 +4,9 @@ const User = require('../models/User');
 
 router.get('/',async (req,res)=>{
     try{
-        const users=await User.find();
+        const size = req.query.size;
+        const page = req.query.page;
+        const users=await User.find({},{},{skip:page*size,limit:size}).select('username email');
         res.json(users);
     }catch(err){
         res.json({message:err});
@@ -13,6 +15,8 @@ router.get('/',async (req,res)=>{
 router.get('/:userId',async (req,res)=>{
     try{
         const user=await User.findById(req.params.userId);
+
+
         res.json(user);
     }catch(err){
         res.json({message:err});
@@ -51,7 +55,7 @@ router.patch('/:userId',async (req,res)=>{
             surname:req.body.surname,
             email:req.body.email,
             dob:req.body.dob
-        }});
+        }},{runValidators:true});
         res.json(updatedUser);
     }catch(err){
         res.json(err);

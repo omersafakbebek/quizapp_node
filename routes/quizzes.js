@@ -4,7 +4,9 @@ const Quiz = require('../models/Quiz');
 
 router.get('/',async (req,res) =>{
     try{
-        const quizzes = await Quiz.find();
+        const size = req.query.size;
+        const page = req.query.page;
+        const quizzes = await Quiz.find({},{},{skip:page*size,limit:size}).select('question');
         res.json(quizzes);
     }catch(err){
         res.json({message:err});
@@ -13,7 +15,10 @@ router.get('/',async (req,res) =>{
 router.get('/:quizId',async (req,res) =>{
     try{
         const quiz = await Quiz.findById(req.params.quizId);
-        res.json(quiz);
+        const newquiz = {
+            question:quiz.question
+        };
+        res.json(newquiz);
     }catch(err){
         res.json({message:err});
     }
@@ -65,7 +70,8 @@ router.delete('/:quizId/:answerId',async (req,res) => {
     try {
         const quiz = await Quiz.findById(req.params.quizId);
         await quiz.answers.pull({_id:req.params.answerId});
-        res.json(quiz.save());
+
+        res.json(await quiz.save());
         
     } catch (error) {
         res.json({message:error});

@@ -30,7 +30,7 @@ const UserSchema = mongoose.Schema({
     email:{
         type: String,
         required: 'Email is required',
-        unique: true    ,
+        unique: true,
         // validate: [validateEmail, 'Provide a valid email address'],
         validate:[validator.isEmail,'Provide a valid email adress']
     },
