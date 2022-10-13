@@ -39,7 +39,7 @@ router.patch('/:quizId',async (req,res) => {
     try{
         const updatedQuiz = await Quiz.updateOne({_id:req.params.quizId},{$set:{
             question:req.body.question,
-            answers:req.body.answers}});
+            answers:req.body.answers}},{runValidators:true});
         res.json(updatedQuiz);
     }catch(err){
         res.json({message:err});
