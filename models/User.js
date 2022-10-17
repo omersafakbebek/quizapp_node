@@ -36,6 +36,10 @@ const UserSchema = mongoose.Schema({
     },
     dob:{
         type: Date
+    },
+    role: {
+        type:String,
+        required: true
     }
 });
 UserSchema.plugin(uniqueValidator,{ message: 'Error, expected {PATH} to be unique.' });

@@ -31,9 +31,7 @@ const mongoose =require('mongoose');
 require('dotenv/config');
 const url = process.env.DB_CONNECTION;
 
-app.post('/login', (req,res)=>{
-    console.log(req.body);
-});
+
 
 app.get('/',(req,res)=>{
     res.send('We are on home');
