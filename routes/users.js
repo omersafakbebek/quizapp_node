@@ -59,15 +59,7 @@ router.get('/:userId',verifyToken,async (req,res)=>{
 });
 router.post('/',async (req,res)=>{
     const encryptedPassword = await bcrypt.hash(req.body.password,10);
-    const user=new User({
-        username:req.body.username,
-        password:encryptedPassword,
-        name:req.body.name,
-        surname:req.body.surname,
-        email:req.body.email,
-        dob:req.body.dob,
-        role:'user'
-    });
+
     try{
         const savedUser = await user.save();
         res.json(savedUser);
