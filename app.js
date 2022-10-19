@@ -7,6 +7,25 @@ const User = require('./models/User');
 const Quiz = require('./models/Quiz');
 const bcrypt = require('bcryptjs');
 
+require('dotenv/config');
+
+const admin = process.env.ADMIN;
+if(admin==1){
+        var d = new Date();
+        bcrypt.hash('admin',10).then((encryptedPassword)=>{
+            var user=new User({
+                username:'admin',
+                password:encryptedPassword,
+                name:'admin',
+                surname:'admin',
+                email:`admin@gmail.com`,
+                dob:d,
+                role:'admin'
+            });
+            user.save();
+        });    
+}
+
 User.countDocuments({},async (err,count) =>{
     console.log('Number of users in the database: ',count);
     if(count<=1){
@@ -82,7 +101,6 @@ app.use('/quiz',quizzesRoute);
 
 const mongoose =require('mongoose');
 
-require('dotenv/config');
 const url = process.env.DB_CONNECTION;
 
 
