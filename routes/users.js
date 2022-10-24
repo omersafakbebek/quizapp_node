@@ -4,8 +4,27 @@ const User = require('../models/User');
 const bcrypt=require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {verifyToken,isAdmin}= require('../auth');
-require('dotenv/config');
+const {upload ,s3}= require('../s3');
 const env=process.env;
+router.patch('/uploadAvatar/:userId',upload.single('avatar'),(req,res)=>{
+    console.log(req.file);
+    res.send('Successfully uploaded '+req.file.location+' location');
+});
+router.get('/listAvatars',async (req,res)=>{
+    let r=await s3.listObjectsV2({Bucket:env.BUCKET}).promise();
+    let x=r.Contents.map(item=>item.Key);
+    res.send(x);
+});
+router.get('/downloadAvatar/:userId',async (req,res)=>{
+    const filename=req.params.userId;
+    let x=await s3.getObject({Bucket:env.BUCKET,Key:filename}).promise();
+    res.send(x.Body);
+});
+router.delete('/deleteAvatar/:userId',async (req,res)=>{
+    const filename=req.params.userId;
+    await s3.deleteObject({Bucket:env.BUCKET,Key:filename}).promise();
+    res.send('File deleted successfully');
+})
 
 router.post('/login', async (req,res)=>{
     try{
