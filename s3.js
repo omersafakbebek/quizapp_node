@@ -15,6 +15,9 @@ const upload=multer({
     storage:multerS3({
         bucket:env.BUCKET,
         s3:s3,
+        contentType:(req,file,cb)=>{
+            cb(null,file.mimetype);
+        },
         acl:'public-read',
         key:(req,file,cb)=>{
             cb(null,req.params.userId);

@@ -5,15 +5,20 @@ const bcrypt=require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {verifyToken,isAdmin}= require('../auth');
 const {upload ,s3}= require('../s3');
+const File=require('../models/File');
 const env=process.env;
-router.patch('/uploadAvatar/:userId',upload.single('avatar'),(req,res)=>{
+router.post('/uploadAvatar/:userId',upload.single('avatar'),async (req,res)=>{
     console.log(req.file);
-    res.send('Successfully uploaded '+req.file.location+' location');
+    const file= new File({
+        key:req.file.key,
+        location:req.file.location
+    });
+    const savedFile=await file.save();
+    res.send('Successfully uploaded '+savedFile);
 });
 router.get('/listAvatars',async (req,res)=>{
-    let r=await s3.listObjectsV2({Bucket:env.BUCKET}).promise();
-    let x=r.Contents.map(item=>item.Key);
-    res.send(x);
+    const files=await File.find().lean();
+    res.json(files);
 });
 router.get('/downloadAvatar/:userId',async (req,res)=>{
     const filename=req.params.userId;
@@ -78,7 +83,14 @@ router.get('/:userId',verifyToken,async (req,res)=>{
 });
 router.post('/',async (req,res)=>{
     const encryptedPassword = await bcrypt.hash(req.body.password,10);
-
+    const user = new User({
+        username:req.body.username,
+        password:encryptedPassword,
+        name:req.body.name,
+        surname:req.body.surname,
+        email:req.body.email,
+        dob:req.body.dob
+    });
     try{
         const savedUser = await user.save();
         res.json(savedUser);
