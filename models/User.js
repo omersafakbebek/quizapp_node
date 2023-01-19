@@ -14,6 +14,9 @@ const UserSchema = mongoose.Schema({
         required: 'username cannot be empty',
         unique: true
     },
+    usernameQrLocation:{
+        type: String
+    },
     // roles: {
 
     // },

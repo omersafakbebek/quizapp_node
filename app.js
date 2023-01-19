@@ -108,9 +108,16 @@ const url = process.env.DB_CONNECTION;
 app.get('/',(req,res)=>{
     res.send('We are on home');
 });
-mongoose.connect(url, {useNewUrlParser: true}, ()=>
-    console.log('connected to db',url)
-);
+mongoose.connect(url, {useNewUrlParser: true}, (err)=>{
+    if(err){
+        console.log(err);
+    }
+    else{
+        console.log('connected to db',url)
+    }
+
+    
+});
 
 app.use((req,res)=>{
     res.status(404).send('Page not found');

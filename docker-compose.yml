@@ -1,0 +1,31 @@
+version: '3'
+services:
+  quizapp-docker:
+    container_name: quizapp-docker
+    image: omersafakbebek/quizapp-docker
+    restart: always
+    volumes:
+      - ./:/app
+    build: .
+    ports:
+      - "8090:8090"
+    environment:
+      - ADMIN=
+      - REDIS_URL=redis://redis:6379
+      - DB_CONNECTION=mongodb://mongo:27017
+    links:
+      - mongo 
+      - redis
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - mongo-db:/data/db
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - redis:/data
+volumes:
+  mongo-db:
+  redis:

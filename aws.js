@@ -11,6 +11,19 @@ aws.config.update({
     region:env.REGION
 });
 const s3=new aws.S3();
+const lambda=new aws.Lambda();
+const invokeLambda = async (username)=>{
+    const params={
+        FunctionName:'qrcodegen',
+        Payload:JSON.stringify({queryStringParameters:{
+            text:username
+        }})
+    };
+    const result = await lambda.invoke(params).promise();
+    return JSON.parse(JSON.parse(result.Payload).body).location;
+    
+}
+
 const upload=multer({
     storage:multerS3({
         bucket:env.BUCKET,
@@ -24,4 +37,4 @@ const upload=multer({
         }
     })
 });
-module.exports={upload,s3};
+module.exports={upload,s3,invokeLambda};
