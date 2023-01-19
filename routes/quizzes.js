@@ -17,7 +17,7 @@ router.get('/:quizId',verifyToken,async (req,res) =>{
     try{
         const quiz = await Quiz.findById(req.params.quizId).lean();
 
-        res.json(quiz);
+        res.json(quiz );
     }catch(err){
         res.json({message:err});
     }
